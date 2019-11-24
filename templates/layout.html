@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-16">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <footer class="center_text">
+    <p><a href="/" class="a" style="text-decoration:none;color:var(--body-color);"><b>MAIN PAGE</b></a></p>
+    </footer>
+</body>
+</html>

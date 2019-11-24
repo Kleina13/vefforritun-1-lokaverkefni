@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container center_text">
+        {% if user['name'] != "none" %}
+            <h3>you are logged in as {{ user['username'] }}</h3>
+            <a href="/logout" class="button" style="color:#ffffff;">logout</a> <a href="/profile" class="button" style="color:#ffffff;">profile page</a>
+        {% else %}
+            <a href="/login" class="button" style="color:#ffffff;">login</a>
+            <a href="/newuser" class="button" style="color:#ffffff;">create a new user</a>
+        {% endif %}
+    </div>
+{% endblock %}
