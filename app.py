@@ -7,14 +7,11 @@ from pymysql import *
 app = Flask(__name__)
 app.secret_key = urandom(13)
 
-login_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
-						   password='mypassword', database='2208022210_...', autocommit=True)
-forum_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
-						   password='mypassword', database='2208022210_lokaverkefni_forum', autocommit=True)
+connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210', password='mypassword', database='2208022210_...', autocommit=True)
 	
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	with login_connection.cursor() as cursor:
+	with connection.cursor() as cursor:
 		cursor.execute("SELECT * FROM user")
 		users = cursor.fetchall()
 
@@ -33,7 +30,7 @@ def login():
 	if 'user' in session: 
 		return redirect(url_for('index'))
 
-	with login_connection.cursor() as cursor:
+	with connection.cursor() as cursor:
 		cursor.execute("SELECT * FROM user")
 		users = cursor.fetchall()
 
@@ -61,7 +58,7 @@ def new_user():
 	if 'user' in session:
 		return redirect(url_for('index'))
 
-	with login_connection.cursor() as cursor:
+	with connection.cursor() as cursor:
 		cursor.execute("SELECT * FROM user")
 		users = cursor.fetchall()
 
@@ -70,7 +67,7 @@ def new_user():
 			if u[0] == r['username']:
 				return rend('new_user.html', error=True)
 
-		with login_connection.cursor() as cursor:
+		with connection.cursor() as cursor:
 			cursor.execute(f"""INSERT INTO User (user, pass, nafn) VALUES
     						   ('{request.form['username']}', '{request.form['password']}', '{request.form['name']}');""")
 		return redirect(url_for('login'))

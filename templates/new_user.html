@@ -6,12 +6,12 @@
          <p><input type="text" name="username" maxlength="32" placeholder="Username" required></p>
          <p><input type="text" name="name" maxlength="32" placeholder="Name" required></p>
          <p><input type="text" name="password" maxlength="32" minlength="4" placeholder="Password" required></p>
-         <p><input type="submit" value="create User"></p>
+         <p><input type="submit" value="Create User"></p>
       </form>
       {% if error == True %}
          <p style="color:#ff0000;">That username is already taken</p>
       {% else %}
-         <p style="color:var(--white);">_</p>
+         <p style="color:#ffffff">_</p>
       {% endif %}
    </div>
 {% endblock %}
