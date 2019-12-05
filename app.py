@@ -7,20 +7,31 @@ from pymysql import *
 app = Flask(__name__)
 app.secret_key = urandom(13)
 
-connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210', password='mypassword', database='2208022210_...', autocommit=True)
+login_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
+						   password='mypassword', database='2208022210_...', autocommit=True)
+forum_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
+						   password='mypassword', database='2208022210_lokaverkefni_forum', autocommit=True)
 	
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	with connection.cursor() as cursor:
+	with login_connection.cursor() as cursor:
 		cursor.execute("SELECT * FROM user")
 		users = cursor.fetchall()
+
+	with forum_connection.cursor() as cursor:
+		cursor.execute("SELECT * FROM posts")
+		posts = cursor.fetchall()
+		cursor.execute("SELECT * FROM comments")
+		comments = cursor.fetchall()
+
+	print(comments)
 
 	if 'user' in session:
 		user = session['user']
 	else: 
 		user = {"username":"none", "password":"none", "name":"none"}
 
-	return rend('index.html', user=user)
+	return rend('index.html', user=user, posts=posts, comments=comments)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -30,7 +41,7 @@ def login():
 	if 'user' in session: 
 		return redirect(url_for('index'))
 
-	with connection.cursor() as cursor:
+	with login_connection.cursor() as cursor:
 		cursor.execute("SELECT * FROM user")
 		users = cursor.fetchall()
 
@@ -58,7 +69,7 @@ def new_user():
 	if 'user' in session:
 		return redirect(url_for('index'))
 
-	with connection.cursor() as cursor:
+	with login_connection.cursor() as cursor:
 		cursor.execute("SELECT * FROM user")
 		users = cursor.fetchall()
 
@@ -67,7 +78,7 @@ def new_user():
 			if u[0] == r['username']:
 				return rend('new_user.html', error=True)
 
-		with connection.cursor() as cursor:
+		with login_connection.cursor() as cursor:
 			cursor.execute(f"""INSERT INTO User (user, pass, nafn) VALUES
     						   ('{request.form['username']}', '{request.form['password']}', '{request.form['name']}');""")
 		return redirect(url_for('login'))
