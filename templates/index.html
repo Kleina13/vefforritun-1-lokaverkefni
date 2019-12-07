@@ -4,10 +4,32 @@
     <div class="container center_text">
         {% if user['name'] != "none" %}
             <h3>you are logged in as {{ user['username'] }}</h3>
-            <a href="/logout" class="button" style="color:#ffffff;">Logout</a> <a href="/profile" class="button" style="color:#ffffff;">Profile page</a>
+            <a href="/logout" class="button" style="color:#ffffff;">Logout</a> <a href="/profile" class="button" style="color:#ffffff;">Profile page</a> <a href="/write" class="button" style="color:#ffffff;">Write a post</a>
         {% else %}
             <a href="/login" class="button" style="color:#ffffff;">login</a>
             <a href="/newuser" class="button" style="color:#ffffff;">Create a new user</a>
         {% endif %}
     </div>
+    {% for p in posts %}
+        <div class="container center_text">
+            <h2>{{ p[2] }}{% if user['username'] == p[1] %} <a style="color:#ff0000;" href="/delete_post/{{p[0]}}">(remove)</a>{% endif %}</h2>
+            <h4>{{ p[1] }}</h4>
+            <p>{{ p[3] }}</p>
+            <p style="color:var(--main-color);">{{ p[4] }}</p>
+            {% for c in comments %}
+                {% if c[0] == p[0] %}
+                    <hr>
+                    <h4>{{ c[1] }}{% if user['username'] == c[1] %} <a style="color:#ff0000;" href="/delete_comment/{{c[2]}}">(remove)</a>{% endif %}</h4>
+                    <p>{{ c[2] }}</p>
+                    <p style="color:var(--main-color);">{{ c[3] }}</p>
+                {% endif %}
+            {% endfor %}
+            <hr>
+            {% if user['name'] != "none" %}
+                <a href="/write/{{ p[0] }}" style="color:var(--main-color);">write a comment</a>
+            {% else %}
+                <p>you have to be logged in to write a comment</p>
+            {% endif %}
+        </div>
+    {% endfor %}
 {% endblock %}

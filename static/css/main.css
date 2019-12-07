@@ -20,6 +20,10 @@ body {
     background-color: var(--body-color);
 }
 
+hr {
+    border-color: var(--main-color);
+    width: 80%;
+}
 
 a {
     color: var(--white);
@@ -83,7 +87,6 @@ footer {
     margin-top: 5em;
     background-color: #696969;
     padding: 15px 0;
-    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;

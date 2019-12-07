@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+   <div class="container center_text">
+        <form action="" method="post">
+            <p><input type="text" name="title" maxlength="32" placeholder="title" required></p>
+            <p><input type="text" name="content" maxlength="65535" placeholder="type here" required></p>
+            <p><input type="submit" value="submit post"></p>
+        </form>
+        {% if error == True %}
+            <p style="color:#ff0000;">Incorrect</p>
+        {% else %}
+            <p style="color:#ffffff">_</p>
+        {% endif %}
+
+
+   </div>
+   <br><br>
+{% endblock %}

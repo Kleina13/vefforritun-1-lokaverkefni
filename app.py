@@ -1,8 +1,13 @@
 # APP
 
+
 from os import urandom
 from flask import Flask, render_template as rend, url_for, request, session, redirect
 from pymysql import *
+from time import gmtime, strftime
+
+def time():
+	return strftime("%d-%m-%Y %H:%M", gmtime())
 
 app = Flask(__name__)
 app.secret_key = urandom(13)
@@ -24,14 +29,119 @@ def index():
 		cursor.execute("SELECT * FROM comments")
 		comments = cursor.fetchall()
 
-	print(comments)
-
 	if 'user' in session:
 		user = session['user']
 	else: 
 		user = {"username":"none", "password":"none", "name":"none"}
 
 	return rend('index.html', user=user, posts=posts, comments=comments)
+
+@app.route('/write', methods=['GET', 'POST'])
+def write_post():
+	r = request.form
+	error = False
+
+	if 'user' not in session:
+		return redirect(url_for('index'))
+
+	with forum_connection.cursor() as cursor:
+		cursor.execute("SELECT * FROM posts")
+		posts = cursor.fetchall()
+
+	user = session['user']
+
+	if request.method == 'POST':
+		error = True
+		
+		if len(posts) != 0:
+			with forum_connection.cursor() as cursor:
+				cursor.execute(f"""INSERT INTO Posts (post_id, author_key, title, content, post_date) VALUES 
+								(
+									{int(posts[-1][0] + 1)},
+									'{user['username']}', 
+									'{r['title']}',
+									'{r['content']}',
+									'{time()}'
+								);""")
+		else:
+			with forum_connection.cursor() as cursor:
+				cursor.execute(f"""INSERT INTO Posts (post_id, author_key, title, content, post_date) VALUES 
+								(
+									{0},
+									'{user['username']}', 
+									'{r['title']}',
+									'{r['content']}',
+									'{time()}'
+								);""")
+		return redirect(url_for('index'))
+	
+	return rend('post.html', user=user, error=error)
+
+@app.route('/delete_post/<int:id>')
+def delete_post(id):
+	if 'user' not in session:
+		return redirect(url_for('index'))
+
+	user = session['user']
+
+	with forum_connection.cursor() as cursor:
+		cursor.execute("SELECT * FROM posts")
+		posts = cursor.fetchall()
+
+	if user['username'] == posts[id][1]:
+		with forum_connection.cursor() as cursor:
+			cursor.execute(f"""DELETE FROM Posts WHERE post_id='{id}';""")
+			cursor.execute(f"""DELETE FROM Comments WHERE original_post_id='{id}';""")
+
+	return redirect(url_for('index'))
+
+@app.route('/write/<int:id>', methods=['GET', 'POST'])
+def write_comment(id):
+	r = request.form
+	error = False
+
+	if 'user' not in session:
+		return redirect(url_for('index'))
+
+	user = session['user']
+
+	if request.method == 'POST':
+		error = True
+		
+		with forum_connection.cursor() as cursor:
+			cursor.execute(f"""INSERT INTO Comments (original_post_id, author_key, content, post_date) VALUES 
+							(
+								{id},
+								'{user['username']}',
+								'{r['content']}',
+								'{time()}'
+							);""")
+		return redirect(url_for('index'))
+	
+	return rend('comment.html', user=user, error=error)
+
+@app.route('/delete_comment/<int:id>')
+def delete_comment(id):
+	if 'user' not in session:
+		return redirect(url_for('index'))
+
+	user = session['user']
+
+	with forum_connection.cursor() as cursor:
+		cursor.execute("SELECT * FROM comments")
+		comments = cursor.fetchall()
+
+	for c in comments:
+		if user['username'] == c[1]:
+			if id == c[0]:
+				with forum_connection.cursor() as cursor:
+					cursor.execute(f"""DELETE FROM Comments WHERE original_post_id='{id}' 
+					and author_key='{c[1]}'
+					and post_date='{c[3]}'
+					and content='{c[2]}';""")
+
+	return redirect(url_for('index'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
