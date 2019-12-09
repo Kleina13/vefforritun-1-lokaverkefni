@@ -103,6 +103,13 @@ def write_comment(id):
 	if 'user' not in session:
 		return redirect(url_for('index'))
 
+	with forum_connection.cursor() as cursor:
+		cursor.execute("SELECT * FROM posts")
+		posts = cursor.fetchall()
+
+	if id > len(posts) - 1:
+		return redirect(url_for('index'))
+
 	user = session['user']
 
 	if request.method == 'POST':
@@ -186,7 +193,12 @@ def new_user():
 	if request.method == 'POST':
 		for u in users:
 			if u[0] == r['username']:
-				return rend('new_user.html', error=True)
+				error = True
+				return rend('new_user.html', error=error)
+		
+		if r['confirm'] != r['password']:
+			error = True
+			return rend('new_user.html', error=error)
 
 		with login_connection.cursor() as cursor:
 			cursor.execute(f"""INSERT INTO User (user, pass, nafn) VALUES

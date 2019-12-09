@@ -15,13 +15,13 @@
             <h2>{{ p[2] }}{% if user['username'] == p[1] %} <a style="color:#ff0000;" href="/delete_post/{{p[0]}}">(remove)</a>{% endif %}</h2>
             <h4>{{ p[1] }}</h4>
             <p>{{ p[3] }}</p>
-            <p style="color:var(--main-color);">{{ p[4] }}</p>
+            <p style="color:#848484;">{{ p[4] }}</p>
             {% for c in comments %}
                 {% if c[0] == p[0] %}
                     <hr>
                     <h4>{{ c[1] }}{% if user['username'] == c[1] %} <a style="color:#ff0000;" href="/delete_comment/{{c[2]}}">(remove)</a>{% endif %}</h4>
                     <p>{{ c[2] }}</p>
-                    <p style="color:var(--main-color);">{{ c[3] }}</p>
+                    <p style="color:#848484;">{{ c[3] }}</p>
                 {% endif %}
             {% endfor %}
             <hr>

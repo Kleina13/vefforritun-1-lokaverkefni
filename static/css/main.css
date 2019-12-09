@@ -7,6 +7,7 @@
     --main-color: #ff1c1c;
     --main-text-color: #000000;
     --white: #f1f1f1;
+    --gray: #696969;
     --body-color: #d8d8d8;
     --shadow-blur: 2px;
 }
@@ -58,7 +59,7 @@ a:visited {
     margin: 20px 25%;
     border: solid 3px var(--main-color);
     border-radius: 20px;
-    box-shadow: 3px 3px 7px #696969;
+    box-shadow: 3px 3px 7px var(--gray);
     background-color: var(--white);
 }
 
@@ -77,7 +78,9 @@ img {
     padding-bottom: 20px; 
 }
 
-#lol {color: #696969;}
+#lol {
+    color: var(--gray);
+}
 
 nav div{
     border: var(--main-color);
@@ -85,7 +88,7 @@ nav div{
 
 footer {
     margin-top: 5em;
-    background-color: #696969;
+    background-color: var(--gray);
     padding: 15px 0;
     left: 0;
     bottom: 0;
@@ -151,13 +154,13 @@ input[type=submit] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    box-shadow: #696969 0 4px 0 0;
-    -webkit-box-shadow: #696969 0 4px 0 0;
+    box-shadow: var(--gray) 0 4px 0 0;
+    -webkit-box-shadow: var(--gray) 0 4px 0 0;
 }
   
 input[type=submit]:active {
     box-shadow: #4d4d4d 0 2px 0 0;
-    -webkit-box-shadow: #696969 0 2px 0 0;
+    -webkit-box-shadow: var(--gray) 0 2px 0 0;
     transform: translateY(2px) translateX(0);
 }
 
@@ -176,13 +179,13 @@ input[type=submit]:focus {
     display: inline-block;
     font-size: 16px;
     cursor: pointer;
-    box-shadow: #696969 0 4px 0 0;
-    -webkit-box-shadow: #696969 0 4px 0 0;
+    box-shadow: var(--gray) 0 4px 0 0;
+    -webkit-box-shadow: var(--gray) 0 4px 0 0;
 }
 
 .button:active {
     box-shadow: #4d4d4d 0 2px 0 0;
-    -webkit-box-shadow: #696969 0 2px 0 0;
+    -webkit-box-shadow: var(--gray) 0 2px 0 0;
     transform: translateY(2px) translateX(0);
 }
 

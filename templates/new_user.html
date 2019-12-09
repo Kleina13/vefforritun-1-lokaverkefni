@@ -5,7 +5,8 @@
       <form action="" method="post">
          <p><input type="text" name="username" maxlength="32" placeholder="Username" required></p>
          <p><input type="text" name="name" maxlength="32" placeholder="Name" required></p>
-         <p><input type="text" name="password" maxlength="32" minlength="4" placeholder="Password" required></p>
+         <p><input type="password" name="password" maxlength="32" minlength="4" placeholder="Password" required></p>
+         <p><input type="password" name="confirm" maxlength="32" minlength="4" placeholder="Confirm password" required></p>
          <p><input type="submit" value="Create User"></p>
       </form>
       {% if error == True %}
