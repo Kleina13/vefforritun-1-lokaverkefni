@@ -9,6 +9,16 @@ from time import gmtime, strftime
 def time():
 	return strftime("%d-%m-%Y %H:%M", gmtime())
 
+def con_login():
+	with login_connection.cursor() as cursor:
+		cursor.execute("SELECT * FROM user")
+		return cursor.fetchall()
+
+def con_forum(table=str):
+	with forum_connection.cursor() as cursor:
+		cursor.execute(f"SELECT * FROM {table}")
+		return cursor.fetchall()
+
 app = Flask(__name__)
 app.secret_key = urandom(13)
 
@@ -16,18 +26,12 @@ login_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
 						   password='mypassword', database='2208022210_...', autocommit=True)
 forum_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
 						   password='mypassword', database='2208022210_lokaverkefni_forum', autocommit=True)
-	
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	with login_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM user")
-		users = cursor.fetchall()
-
-	with forum_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM posts")
-		posts = cursor.fetchall()
-		cursor.execute("SELECT * FROM comments")
-		comments = cursor.fetchall()
+	users = con_login()
+	posts = con_forum('posts')
+	comments = con_forum('comments')
 
 	if 'user' in session:
 		user = session['user']
@@ -44,9 +48,7 @@ def write_post():
 	if 'user' not in session:
 		return redirect(url_for('index'))
 
-	with forum_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM posts")
-		posts = cursor.fetchall()
+	posts = con_forum('posts')
 
 	user = session['user']
 
@@ -84,9 +86,7 @@ def delete_post(id):
 
 	user = session['user']
 
-	with forum_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM posts")
-		posts = cursor.fetchall()
+	posts = con_forum('posts')
 
 	if user['username'] == posts[id][1]:
 		with forum_connection.cursor() as cursor:
@@ -103,9 +103,7 @@ def write_comment(id):
 	if 'user' not in session:
 		return redirect(url_for('index'))
 
-	with forum_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM posts")
-		posts = cursor.fetchall()
+	posts = con_forum('posts')
 
 	if id > len(posts) - 1:
 		return redirect(url_for('index'))
@@ -134,9 +132,7 @@ def delete_comment(id):
 
 	user = session['user']
 
-	with forum_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM comments")
-		comments = cursor.fetchall()
+	comments = con_forum('comments')
 
 	for c in comments:
 		if user['username'] == c[1]:
@@ -158,9 +154,7 @@ def login():
 	if 'user' in session: 
 		return redirect(url_for('index'))
 
-	with login_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM user")
-		users = cursor.fetchall()
+	users = con_login()
 
 	if request.method == 'POST':
 		error = True
@@ -186,9 +180,7 @@ def new_user():
 	if 'user' in session:
 		return redirect(url_for('index'))
 
-	with login_connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM user")
-		users = cursor.fetchall()
+	users = con_login()
 
 	if request.method == 'POST':
 		for u in users:
