@@ -29,7 +29,6 @@ forum_connection = connect(host='tsuts.tskoli.is', port=3306, user='2208022210',
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	users = con_login()
 	posts = con_forum('posts')
 	comments = con_forum('comments')
 
