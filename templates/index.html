@@ -12,14 +12,16 @@
     </div>
     {% for p in posts %}
         <div class="container center_text">
-            <h2>{{ p[2] }}{% if user['username'] == p[1] %} <a style="color:#ff0000;" href="/delete_post/{{p[0]}}">(remove)</a>{% endif %}</h2>
+            <h2>{{ p[2] }}</h2>
             <h4>{{ p[1] }}</h4>
+            <p>{% if user['username'] == p[1] %}<a style="color:#ff0000;" href="/update_post/{{p[0]}}">(edit)</a> <a style="color:#ff0000;" href="/delete_post/{{p[0]}}">(remove)</a>{% endif %}</p>
             <p>{{ p[3] }}</p>
             <p style="color:#848484;">{{ p[4] }}</p>
             {% for c in comments %}
                 {% if c[0] == p[0] %}
                     <hr>
-                    <h4>{{ c[1] }}{% if user['username'] == c[1] %} <a style="color:#ff0000;" href="/delete_comment/{{c[2]}}">(remove)</a>{% endif %}</h4>
+                    <h4>{{ c[1] }}</h4>
+                    <p>{% if user['username'] == c[1] %}<a style="color:#ff0000;" href="/update_comment/{{c[0]}}">(edit)</a> <a style="color:#ff0000;" href="/delete_comment/{{c[0]}}">(remove)</a>{% endif %}</p>
                     <p>{{ c[2] }}</p>
                     <p style="color:#848484;">{{ c[3] }}</p>
                 {% endif %}

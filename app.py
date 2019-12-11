@@ -86,13 +86,35 @@ def delete_post(id):
 	user = session['user']
 
 	posts = con_forum('posts')
-
+	
 	if user['username'] == posts[id][1]:
 		with forum_connection.cursor() as cursor:
 			cursor.execute(f"""DELETE FROM Posts WHERE post_id='{id}';""")
 			cursor.execute(f"""DELETE FROM Comments WHERE original_post_id='{id}';""")
 
 	return redirect(url_for('index'))
+
+@app.route('/update_post/<int:id>', methods=['GET', 'POST'])
+def update_post(id):
+	r = request.form
+
+	if 'user' not in session:
+		return redirect(url_for('index'))
+
+	user = session['user']
+
+	posts = con_forum('posts')
+
+	if request.method == 'POST':
+		if user['username'] == posts[id][1]:
+			with forum_connection.cursor() as cursor:
+				cursor.execute(f"""UPDATE posts SET 
+								content='{r['content']}'
+								WHERE post_id='{id}'""")
+
+		return redirect(url_for('index'))
+
+	return rend('update_post.html')
 
 @app.route('/write/<int:id>', methods=['GET', 'POST'])
 def write_comment(id):
@@ -143,6 +165,33 @@ def delete_comment(id):
 					and content='{c[2]}';""")
 
 	return redirect(url_for('index'))
+
+@app.route('/update_comment/<int:id>', methods=['GET', 'POST'])
+def update_comment(id):
+	r = request.form
+
+	if 'user' not in session:
+		return redirect(url_for('index'))
+
+	user = session['user']
+
+	comments = con_forum('comments')
+
+	if request.method == 'POST':
+		for c in comments:
+			if user['username'] == c[1]:
+				if id == c[0]:
+					with forum_connection.cursor() as cursor:
+						cursor.execute(f"""UPDATE comments SET 
+						content='{r['content']}'
+						WHERE original_post_id='{id}' 
+						and author_key='{c[1]}'
+						and post_date='{c[3]}'
+						and content='{c[2]}';""")
+
+		return redirect(url_for('index'))
+
+	return rend('update_post.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
