@@ -21,6 +21,10 @@ body {
     background-color: var(--body-color);
 }
 
+p {
+    margin: 10px;
+}
+
 hr {
     border-color: var(--main-color);
     width: 80%;
